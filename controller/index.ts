@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import connectDB from "../database";
 import { users } from "../database/schema";
 import { eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
 
 export const home = async (_: Request, res: Response) => {
   res.status(200).send({ message: "home" });
@@ -10,6 +14,11 @@ export const home = async (_: Request, res: Response) => {
 
 export const signup = async (req: Request, res: Response) => {
   const { fname, lname, email, password } = req.body;
+
+  if (!fname || !lname || !email || !password) {
+    res.status(400).send({ message: "All fields are required" });
+    return;
+  }
 
   try {
     const db = await connectDB();
@@ -37,5 +46,49 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     res.status(201).send({ message: "Account created successfully!" });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+export const signin = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send({ message: "All fields are required" });
+    return;
+  }
+
+  try {
+    const db = await connectDB();
+    const user = await db.select().from(users).where(eq(users.email, email));
+    if (user.length === 0) {
+      res.status(400).send({ message: "Incorrect email or password" });
+      return;
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user[0].hashedPassword
+    );
+
+    if (!passwordMatch) {
+      res.status(400).send({ message: "Incorrect email or password" });
+      return;
+    }
+
+    const token = jwt.sign(
+      {
+        user_id: user[0].user_id,
+        fname: user[0].fname,
+        lname: user[0].lname,
+        email: user[0].email,
+      },
+      process.env.JWT_SECRET as string
+    );
+
+    res.status(200).send({ message: "Logged in successfully!", token: token });
+  } catch (error) {
+    res.status(500).send({ message: "Internal server error" });
+  }
 };
