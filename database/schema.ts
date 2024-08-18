@@ -11,6 +11,8 @@ import {
 export const users = pgTable("users", {
   user_id: serial("user_id").primaryKey(),
   username: varchar("username", { length: 100 }).notNull().unique(),
+  fname: varchar("fname", { length: 100 }).notNull(),
+  lname: varchar("lname", { length: 100 }).notNull(),
   email: varchar("email", { length: 100 }).notNull(),
   hashedPassword: varchar("password", { length: 100 }).notNull(),
 });

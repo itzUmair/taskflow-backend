@@ -8,6 +8,13 @@
       "when": 1723966877111,
       "tag": "0000_organic_wolfsbane",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1723972071942,
+      "tag": "0001_pretty_enchantress",
+      "breakpoints": true
     }
   ]
 }
