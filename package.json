@@ -5,7 +5,9 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon index.ts"
+    "dev": "nodemon index.ts",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx tsx database/migrate.ts"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
