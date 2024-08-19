@@ -77,14 +77,15 @@ export const signin = async (req: Request, res: Response) => {
       return;
     }
 
+    const token = jwt.sign(
+      { user_id: user[0].user_id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: 7 * 24 * 60 * 60 }
+    );
+
     res.status(200).send({
       message: "Logged in successfully!",
-      user: {
-        user_id: user[0].user_id,
-        fname: user[0].fname,
-        lname: user[0].lname,
-        email: user[0].email,
-      },
+      token,
     });
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });
