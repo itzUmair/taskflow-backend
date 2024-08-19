@@ -35,7 +35,10 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const hashedPassord: string = await bcrypt.hash(password, 10);
-    const username: string = email.split("@")[0];
+
+    const randomNumeber = Math.floor(Math.random() * 9000) + 1000;
+
+    const username: string = email.split("@")[0] + randomNumeber;
 
     await db.insert(users).values({
       email: email,
@@ -47,6 +50,7 @@ export const signup = async (req: Request, res: Response) => {
 
     res.status(201).send({ message: "Account created successfully!" });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "Internal server error" });
   }
 };
