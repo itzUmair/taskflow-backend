@@ -22,7 +22,13 @@ export const getUserByToken = async (req: Request, res: Response) => {
   try {
     const db = await connectDB();
     const user = await db
-      .select()
+      .select({
+        user_id: users.user_id,
+        username: users.username,
+        fname: users.fname,
+        lname: users.lname,
+        email: users.email,
+      })
       .from(users)
       .where(eq(users.user_id, user_id));
 
@@ -32,12 +38,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
     }
 
     res.status(200).send({
-      user: {
-        user_id: user[0].user_id,
-        fname: user[0].fname,
-        lname: user[0].lname,
-        email: user[0].email,
-      },
+      user: user[0],
     });
 
     await closeDB();
