@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { config } from "dotenv";
 import router from "./routes/routes";
 import LoggerMiddleware from "./middleware/logger";
+import AuthMiddleware from "./middleware/auth";
 
 config({ path: ".env.local" });
 
@@ -12,12 +14,13 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:3000"],
+    origin: "http://127.0.0.1:3000",
     methods: "*",
     credentials: true,
   })
 );
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(LoggerMiddleware);
 app.use("/api/v1", router);
