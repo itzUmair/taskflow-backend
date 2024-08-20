@@ -18,6 +18,7 @@ export const getUserProjects = async (req: Request, res: Response) => {
       .where(eq(project_members.user_id, Number(userid)));
     res.status(200).send({ projects: response });
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .send({ message: "Something went wrong! Please try again later" });

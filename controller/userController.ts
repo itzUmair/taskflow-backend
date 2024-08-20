@@ -40,7 +40,12 @@ export const getUserByToken = async (req: Request, res: Response) => {
     res.status(200).send({
       user: user[0],
     });
-
-    await closeDB();
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ message: "Something went wrong! Please try again later" });
+  } finally {
+    closeDB();
+  }
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import connectDB from "../database";
+import connectDB, { closeDB } from "../database";
 import { users } from "../database/schema";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
@@ -52,6 +52,8 @@ export const signup = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Internal server error" });
+  } finally {
+    closeDB();
   }
 };
 
@@ -92,6 +94,9 @@ export const signin = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "Internal server error" });
+  } finally {
+    closeDB();
   }
 };
